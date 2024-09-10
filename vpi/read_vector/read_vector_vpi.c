@@ -5,15 +5,15 @@
 #include "vpi_user.h"
 
 
-/***********************************************************
- * Function Prototypes                                     *
- ***********************************************************/
+/*****************************************************************
+ * Function Prototypes                                           *
+******************************************************************/
 static void vpit_CheckFileExtension(PLI_BYTE8 *, PLI_BYTE8 *);
 
 
-PLI_INT32 FileCalltf(PLI_BYTE8 *user_data),
-          FileCompiletf(PLI_BYTE8 *user_data),
-          FileStartOfSim(s_cb_data *callback_data);
+PLI_INT32 ReadVectorCalltf(PLI_BYTE8 *user_data),
+          ReadVectorCompiletf(PLI_BYTE8 *user_data),
+          ReadVectorStartOfSim(s_cb_data *callback_data);
 
 static int vpit_CheckError(void)
 {
@@ -26,36 +26,82 @@ static int vpit_CheckError(void)
    }
    return error_code;
 }
-/*************************************************
- * FileCompiletf()                               *
- *                                               *
- * Validate the passed arguments and raise error *
- * if any otherwise perform the functionality    *
- *                                               *
- *************************************************/
-PLI_INT32 FileCompiletf(PLI_BYTE8 *user_data)
+/*****************************************************************
+ * Structure definitions                                         *
+ *                                                               *
+ * Defines storage structure for file pointer and vector handle  *
+ *                                                               *
+ *****************************************************************/
+typedef struct file_struct{
+   FILE *file_ptr;               /* test vector file pointer       */
+   vpiHandle obj_h;              /* pointer to store vector object */
+} file_struct_s, *file_struct_p; /* structure access variables     */
+
+/******************************************************************
+ * FileCompiletf()                                                *
+ *                                                                *
+ * Validate the passed arguments and raise error                  *
+ * if any otherwise perform the functionality                     *
+ *                                                                *
+ ******************************************************************/
+PLI_INT32 ReadVectorCompiletf(PLI_BYTE8 *user_data)
 {
-   vpiHandle systf_handle, arg_itr, arg_handle;
+   s_cb_data  callback_handle;
+   vpiHandle  systf_h, arg_itr, arg_h, cb_h;
+   PLI_INT32  tfarg_type;
+   int        err_flag = 0;
+   char       *file_name;
 
-   /* valid files are text files (.txt) */
-   PLI_INT32 tfarg_type;
-
-   int err_flag = 0;
-
-   do {
-      systf_handle = vpi_handle(vpiArgument, systf_handle);
-      tfarg_type   = vpi_get(vpiType, arg_handle);
-      arg_handle   = vpi_scan(arg_itr);
-      if(arg_itr == NULL) {
-         vpi_printf("ERROR: $file_op requires input and output file, has none\n");
-         err_flag = 1;
-         break;
-      }
-   }while(0==1);
-   if(err_flag == 1) {
-      vpi_control(vpiFinish, 1);
-      vpi_printf("Error incurred");
+   systf_h = vpi_handle(vpiSysTfCall, NULL);
+   arg_itr = vpi_iterate(vpiArgument, systf_h);
+   if(arg_itr == NULL) {
+      vpi_printf("ERROR :: $read_vector requires two arguments \n");
+      vpi_control(vpiFinish, 1); /* abort simulation */
+      return(0);
    }
+
+   arg_h = vpi_scan(arg_itr);
+   if(vpi_get(vpiType, arg_h) != vpiStringVal) {
+      vpi_printf("read_vector arg1 must be a quoted file name \n");
+      err_flag = 1;
+   }
+   else if(vpi_get(vpiType, arg_h) != vpiStringConst) {
+      vpi_printf("read_vector arg2 must be a string \n");
+      err_flag = 1;
+   }
+
+   arg_h = vpi_scan(arg_itr);
+   tfarg_type = vpi_get(vpiType, arg_h);
+   if(  (tfarg_type != vpiReg)        && 
+        (tfarg_type != vpiIntegerVar) &&
+        (tfarg_type != vpiTimeVar) ) {
+      vpi_printf("read_test_vector arg2 must be a register type \n");
+      err_flag = 1;
+   }
+
+   if(vpi_scan(arg_itr) != NULL) {
+      vpi_printf("read_vector needs only two arguments \n");
+      vpi_free_object(arg_itr);
+      err_flag = 1;
+   }
+
+   if(err_flag == 1){
+      vpi_printf("Encountered occured .. Check log files for debugging");
+      vpi_control(vpiFinish, 1); /* Abort Simulation */
+      return (0);
+   }
+
+   /* No syntax errors, setting up a callback for start of simulation */
+   callback_handle.reason = cbStartOfSimulation;
+   callback_handle.cb_rtn = ReadVectorStartOfSim;
+   callback_handle.obj    = NULL;
+   callback_handle.time   = NULL;
+   callback_handle.value  = NULL;
+
+   /* using user_data to pass systf_h to simulation callback so that the 
+    * callback can access the system task arguments                   */
+   callback_handle.user_data = (PLI_BYTE8 *)systf_h;
+   cb_h = vpi_register_cb(&cb_handle);
 }
 
 /****************************************************
@@ -153,9 +199,9 @@ void vpit_RegisterTfs(void)
 
    systf_data.type        = vpiSysTask;
    systf_data.sysfunctype = 0;
-   systf_data.tfname      = "$file_op";
-   systf_data.calltf      = FileCalltf;
-   systf_data.compiletf   = FileCompiletf;
+   systf_data.tfname      = "$read_vector";
+   systf_data.calltf      = ReadVectorCalltf;
+   systf_data.compiletf   = ReadVectorCompiletf;
    systf_data.sizetf      = 0;
    systf_data.user_data   = 0;
 

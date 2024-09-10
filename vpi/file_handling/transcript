@@ -1,48 +1,48 @@
 # do run.do
 # QuestaSim-64 vlog 2020.3 Compiler 2020.07 Jul 12 2020
-# Start time: 15:32:42 on Sep 10,2024
+# Start time: 17:15:18 on Sep 10,2024
 # vlog top.v 
 # -- Compiling module top
 # 
 # Top level modules:
 # 	top
-# End time: 15:32:42 on Sep 10,2024, Elapsed time: 0:00:00
+# End time: 17:15:18 on Sep 10,2024, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 0
 # gcc -g -c -m64 -Wall -I. -IC:/questasim64_2020.3/include  file_handling_vpi.c
 # ** Error: file_handling_vpi.c: In function 'FileCompiletf':
-# file_handling_vpi.c:40:14: warning: variable 'tfarg_type' set but not used [-Wunused-but-set-variable]
-#    40 |    PLI_INT32 tfarg_type;
+# file_handling_vpi.c:41:14: warning: variable 'tfarg_type' set but not used [-Wunused-but-set-variable]
+#    41 |    PLI_INT32 tfarg_type;
 #       |              ^~~~~~~~~~
-# file_handling_vpi.c:58:1: warning: control reaches end of non-void function [-Wreturn-type]
-#    58 | }
+# file_handling_vpi.c:59:1: warning: control reaches end of non-void function [-Wreturn-type]
+#    59 | }
 #       | ^
 # file_handling_vpi.c: At top level:
-# file_handling_vpi.c:17:12: warning: 'vpit_CheckError' defined but not used [-Wunused-function]
-#    17 | static int vpit_CheckError(void)
+# file_handling_vpi.c:18:12: warning: 'vpit_CheckError' defined but not used [-Wunused-function]
+#    18 | static int vpit_CheckError(void)
 #       |            ^~~~~~~~~~~~~~~
 # file_handling_vpi.c: In function 'FileCompiletf':
-# file_handling_vpi.c:45:22: warning: 'systf_handle' is used uninitialized [-Wuninitialized]
-#    45 |       systf_handle = vpi_handle(vpiArgument, systf_handle);
+# file_handling_vpi.c:46:22: warning: 'systf_handle' is used uninitialized [-Wuninitialized]
+#    46 |       systf_handle = vpi_handle(vpiArgument, systf_handle);
 #       |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# file_handling_vpi.c:37:14: note: 'systf_handle' was declared here
-#    37 |    vpiHandle systf_handle, arg_itr, arg_handle;
+# file_handling_vpi.c:38:14: note: 'systf_handle' was declared here
+#    38 |    vpiHandle systf_handle, arg_itr, arg_handle;
 #       |              ^~~~~~~~~~~~
-# file_handling_vpi.c:46:22: warning: 'arg_handle' is used uninitialized [-Wuninitialized]
-#    46 |       tfarg_type   = vpi_get(vpiType, arg_handle);
+# file_handling_vpi.c:47:22: warning: 'arg_handle' is used uninitialized [-Wuninitialized]
+#    47 |       tfarg_type   = vpi_get(vpiType, arg_handle);
 #       |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# file_handling_vpi.c:37:37: note: 'arg_handle' was declared here
-#    37 |    vpiHandle systf_handle, arg_itr, arg_handle;
+# file_handling_vpi.c:38:37: note: 'arg_handle' was declared here
+#    38 |    vpiHandle systf_handle, arg_itr, arg_handle;
 #       |                                     ^~~~~~~~~~
-# file_handling_vpi.c:47:22: warning: 'arg_itr' is used uninitialized [-Wuninitialized]
-#    47 |       arg_handle   = vpi_scan(arg_itr);
+# file_handling_vpi.c:48:22: warning: 'arg_itr' is used uninitialized [-Wuninitialized]
+#    48 |       arg_handle   = vpi_scan(arg_itr);
 #       |                      ^~~~~~~~~~~~~~~~~
-# file_handling_vpi.c:37:28: note: 'arg_itr' was declared here
-#    37 |    vpiHandle systf_handle, arg_itr, arg_handle;
+# file_handling_vpi.c:38:28: note: 'arg_itr' was declared here
+#    38 |    vpiHandle systf_handle, arg_itr, arg_handle;
 #       |                            ^~~~~~~
 # Executing ONERROR command at macro ./run.do line 39
 # gcc -shared -lm -m64  -Wl,-Bsymbolic -Wl,-export-all-symbols -o  file_handling_vpi.dll file_handling_vpi.o  -LC:/questasim64_2020.3/win64 -lmtipli
 # vsim -c top -pli "file_handling_vpi.dll" 
-# Start time: 15:32:42 on Sep 10,2024
+# Start time: 17:15:19 on Sep 10,2024
 # ** Note: (vsim-3812) Design is being optimized...
 # ** Warning: (vsim-3865) Due to PLI being present, global +acc is being enabled automatically. This will cause your simulation to run very slowly. Please use vsim -no_autoacc to disable this feature. This feature is now deprecated and will be removed from future releases.
 # //  Questa Sim-64
@@ -63,8 +63,9 @@
 # Loading ./file_handling_vpi.dll
 # 
 #  $file_o operation in use
-# FILE1 name : file1.txt, FILE2 name : file2.txt
+# valid extension for file1
+# valid extension for file2
 # ** Note: $finish    : top.v(6)
 #    Time: 100 ns  Iteration: 0  Instance: /top
-# End time: 15:32:50 on Sep 10,2024, Elapsed time: 0:00:08
+# End time: 17:15:27 on Sep 10,2024, Elapsed time: 0:00:08
 # Errors: 0, Warnings: 1
