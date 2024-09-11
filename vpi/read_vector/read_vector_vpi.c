@@ -205,7 +205,7 @@ PLI_INT32 ReadVectorCalltf(PLI_BYTE8 *user_data)
    value_s.format    = vpiHexStrVal;
    value_s.value.str = vector;
    vpi_put_value(arg2_h, &value_s, NULL, vpiNoDelay);
-   vpi_printf("FROM VPI :: input = %d\n", arg2_h);
+   vpi_printf("FROM VPI :: input = %s\n", value_s.value.str);
 
    return(0);
 }
