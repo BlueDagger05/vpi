@@ -8,12 +8,7 @@ initial begin
    forever #10 clk = ~clk;
 end
 
-initial begin
-   repeat(10)
-   @(posedge clk) read_vector_vpi("file1.txt", vector);
-   #100 $finish();
-end
-
+always @(posedge clk)  $read_vector("file1.txt", vector);
 initial begin
    $monitor("FROM SIM :: VECTOR = 0x%0h", vector);
 end

@@ -8,24 +8,24 @@
 /*****************************************************************
  * Function Prototypes                                           *
 ******************************************************************/
-static void vpit_CheckFileExtension(PLI_BYTE8 *, PLI_BYTE8 *);
-
-
+//static void vpit_CheckFileExtension(PLI_BYTE8 *, PLI_BYTE8 *);
+//
+//
 PLI_INT32 ReadVectorCalltf(PLI_BYTE8 *user_data),
           ReadVectorCompiletf(PLI_BYTE8 *user_data),
-          ReadVectorStartOfSim(s_cb_data *callback_data);
+          ReadVectorStartOfSim(s_cb_data *cb_data_s);
 
-static int vpit_CheckError(void)
-{
-   int error_code;
-   s_vpi_error_info error_info;
-
-   error_code = vpi_chk_error( &error_info );
-   if(error_code && error_info.message) {
-      vpi_printf(" %s \n", error_info.message);
-   }
-   return error_code;
-}
+//static int vpit_CheckError(void)
+//{
+//   int error_code;
+//   s_vpi_error_info error_info;
+//
+//   error_code = vpi_chk_error( &error_info );
+//   if(error_code && error_info.message) {
+//      vpi_printf(" %s \n", error_info.message);
+//   }
+//   return error_code;
+//}
 /*****************************************************************
  * Structure definitions                                         *
  *                                                               *
@@ -37,6 +37,23 @@ typedef struct file_struct{
    vpiHandle obj_h;              /* pointer to store vector object */
 } file_struct_s, *file_struct_p; /* structure access variables     */
 
+/****************************************************************************
+ * VPI Registration Data
+****************************************************************************/
+void vpit_RegisterTfs()
+{
+   s_vpi_systf_data tf_data;
+
+   tf_data.type        = vpiSysTask;
+   tf_data.sysfunctype = 0;
+   tf_data.tfname      = "$read_vector";
+   tf_data.calltf      = ReadVectorCalltf;
+   tf_data.compiletf   = ReadVectorCompiletf;
+   tf_data.sizetf      = 0;
+   tf_data.user_data   = 0;
+
+   vpi_register_systf(&tf_data);
+}
 /******************************************************************
  * FileCompiletf()                                                *
  *                                                                *
@@ -46,7 +63,7 @@ typedef struct file_struct{
  ******************************************************************/
 PLI_INT32 ReadVectorCompiletf(PLI_BYTE8 *user_data)
 {
-   s_cb_data  callback_handle;
+   s_cb_data  cb_data_s;
    vpiHandle  systf_h, arg_itr, arg_h, cb_h;
    PLI_INT32  tfarg_type;
    int        err_flag = 0;
@@ -61,12 +78,12 @@ PLI_INT32 ReadVectorCompiletf(PLI_BYTE8 *user_data)
    }
 
    arg_h = vpi_scan(arg_itr);
-   if(vpi_get(vpiType, arg_h) != vpiStringVal) {
+   if(vpi_get(vpiType, arg_h) != vpiConstant) {
       vpi_printf("read_vector arg1 must be a quoted file name \n");
       err_flag = 1;
    }
-   else if(vpi_get(vpiType, arg_h) != vpiStringConst) {
-      vpi_printf("read_vector arg2 must be a string \n");
+   else if(vpi_get(vpiConstType, arg_h) != vpiStringConst) {
+      vpi_printf("read_vector arg1 must be a string \n");
       err_flag = 1;
    }
 
@@ -85,138 +102,116 @@ PLI_INT32 ReadVectorCompiletf(PLI_BYTE8 *user_data)
       err_flag = 1;
    }
 
-   if(err_flag == 1){
+   if(err_flag){
       vpi_printf("Encountered occured .. Check log files for debugging");
       vpi_control(vpiFinish, 1); /* Abort Simulation */
       return (0);
    }
 
    /* No syntax errors, setting up a callback for start of simulation */
-   callback_handle.reason = cbStartOfSimulation;
-   callback_handle.cb_rtn = ReadVectorStartOfSim;
-   callback_handle.obj    = NULL;
-   callback_handle.time   = NULL;
-   callback_handle.value  = NULL;
-
-   /* using user_data to pass systf_h to simulation callback so that the 
-    * callback can access the system task arguments                   */
-   callback_handle.user_data = (PLI_BYTE8 *)systf_h;
-   cb_h = vpi_register_cb(&cb_handle);
+   /* setup a callback for start of simulation */
+   cb_data_s.reason          = cbStartOfSimulation;
+   cb_data_s.cb_rtn          = ReadVectorStartOfSim;
+   cb_data_s.obj             = NULL;
+   cb_data_s.time            = NULL;
+   cb_data_s.value           = NULL;
+   cb_data_s.user_data       = (PLI_BYTE8 *)systf_h; /* pass systf_h */
+   cb_h                      = vpi_register_cb(&cb_data_s);
+   vpi_free_object(cb_h);                            /* dont need a callback handle */
+   return(0);
 }
 
+/******************************************************************
+ * StartOfSim() Callback -- opens the test vector file and saves
+ * the pointer and the system task handle in the work area storage
+ *                                                  
+ * Routine which gets invoked before 0 sim time     
+ *                                                  
+ ******************************************************************/
+PLI_INT32 ReadVectorStartOfSim(p_cb_data cb_data)
+{
+   s_vpi_value    argVal;
+   char           *file_name;
+   FILE           *vector_file;
+   vpiHandle      systf_h, arg_itr, arg1_h, arg2_h;
+
+   file_struct_p vector_data; /* Pointer to a ReadVecData structure */
+   vector_data  = (file_struct_p)malloc(sizeof(file_struct_s));
+
+   /* retrieving system task handle from user_data */
+   systf_h = (vpiHandle)cb_data->user_data;
+
+   /* get argument handles */
+   arg_itr = vpi_iterate(vpiArgument, systf_h);
+   arg1_h  = vpi_scan(arg_itr);
+   arg2_h  = vpi_scan(arg_itr);
+   vpi_free_object(arg_itr);
+
+   /* read file name from first tfarg*/
+   argVal.format = vpiStringVal;
+   vpi_get_value(arg1_h, &argVal);
+   if(vpi_chk_error(NULL)) {
+      vpi_printf("ERROR: $read_vector could not get file name\n");
+      vpi_control(vpiFinish, 1); /*abort simulation */
+      return(0);
+   }
+   file_name = argVal.value.str;
+   if(!(vector_file = fopen(file_name, "r"))) {
+      vpi_printf("$read_vector could not open file %s \n", file_name);
+      vpi_control(vpiFinish, 1); /*abort simulation */
+      return(0);
+   }
+
+   /* store file pointer and tfarg2_h in work area for this instance */
+   vector_data->file_ptr = vector_file;
+   vector_data->obj_h    = arg2_h;
+   vpi_put_userdata(systf_h, (PLI_BYTE8 *)vector_data);
+
+   return(0);
+}
 /****************************************************
- * FileCalltf()                                     *
+ * ReadVectorCalltf()                               *
  *                                                  *
  * Perfoms the task/function as per user definition *
  *                                                  *
  ****************************************************/
-PLI_INT32 FileCalltf(PLI_BYTE8 *user_data)   
+PLI_INT32 ReadVectorCalltf(PLI_BYTE8 *user_data)   
 {
-   s_vpi_value value_s;
-   vpiHandle systf_handle, arg_itr, arg_handle;
-   PLI_BYTE8 *arg1, *arg2;
-   char *string_keep1, *string_keep2;
+   s_cb_data       data_s;
+   s_vpi_time      time_s;
+   s_vpi_value     value_s;
+   FILE           *vector_file;
+   vpiHandle       systf_h, arg2_h;
+   file_struct_p   vector_data;   /* pointer to a file_struct structure */
+   char            vector[1024];  /* could use malloc                   */
 
-   systf_handle = vpi_handle(vpiSysTfCall, NULL);
-   arg_itr      = vpi_iterate(vpiArgument, systf_handle);
-   if(arg_itr == NULL) {
-      vpi_printf("ERROR : $file_o failed to obtain file arguments \n");
+   systf_h     = vpi_handle(vpiSysTfCall, NULL);
+   vector_data = (file_struct_p)vpi_get_userdata(systf_h);
+
+   /* ger ReadVecData pointer from work area for this task instance   */
+   /* the data in the work area was loaded at the start of simulation */
+   vector_file = vector_data->file_ptr;
+   arg2_h      = vector_data->obj_h;
+
+   /* read next line from the file */
+   if( (fscanf(vector_file, "%s\n", vector)) == EOF) {
+      vpi_printf("$read_vector reached End-Of-File\n");
+      fclose(vector_data->file_ptr);
+      vpi_control(vpiFinish,1);
       return(0);
    }
-   // Retrieving name of first handle
-   arg_handle     = vpi_scan(arg_itr);
-   value_s.format = vpiStringVal; 
-   vpi_get_value(arg_handle, &value_s);
-   arg1         = value_s.value.str; 
 
-   string_keep1 = malloc(strlen((char*)arg1)+1);
-   if(string_keep1 == NULL) {
-      vpi_printf("ERROR : Failed to allocate memory for string_keep1");
-      return(1);
-   }
-   strcpy(string_keep1, arg1);
-
-   // Retrieving name of second handle
-   arg_handle     = vpi_scan(arg_itr);
-   value_s.format = vpiStringVal;
-   vpi_get_value(arg_handle, &value_s);
-   arg2           = value_s.value.str;
-
-   string_keep2   = malloc(strlen((char*)arg2)+1);
-   if(string_keep2 == NULL) {
-      vpi_printf("ERROR : Failed to allocate memory for string_keep2");
-      return(1);
-   }
-   strcpy(string_keep2, arg2);
-
-   vpit_CheckFileExtension(string_keep1, string_keep2);
-
-   //vpi_printf("FILE1 name : %s, FILE2 name : %s\n", string_keep1, string_keep2 );
-
-   // Freeing allocated space
-   free(string_keep1);
-   free(string_keep2);
-
-   // Cleaning VPI handle
-   vpi_free_object(arg_itr);
+   /* write the vector to the second system task argument */
+   value_s.format    = vpiHexStrVal;
+   value_s.value.str = vector;
+   vpi_put_value(arg2_h, &value_s, NULL, vpiNoDelay);
+   vpi_printf("FROM VPI :: input = %d\n", arg2_h);
 
    return(0);
 }
 
-/* Function definition for vpit_CheckFileExtension */
-void vpit_CheckFileExtension(PLI_BYTE8 *arg1, PLI_BYTE8 *arg2)
-{
-   char *compare1 = strrchr(arg1, '.');
-   char *compare2 = strrchr(arg2, '.');
-   char str_compare[4] = ".txt";
-   if ( strcmp(str_compare, compare1) == 0)  
-      vpi_printf("valid extension for file1\n");
-   else {
-      vpi_printf("ERROR: Invalid extension... File1 must be .txt file\n");
-      vpi_control(vpiFinish, 1);
-   }
-   if ( strcmp(str_compare, compare2) == 0)
-      vpi_printf("valid extension for file2\n");
-   else
-   {
-      vpi_printf("ERROR: Invalid extension... File2 must be .txt file\n");
-      vpi_control(vpiFinish, 1);
-   }
-}
-
-PLI_INT32 FileStartOfSim(s_cb_data *callback_data)
-{
-   vpi_printf("\n $file_o operation in use\n");
-   return(0);
-}
 
 
-void vpit_RegisterTfs(void)
-{
-   s_vpi_systf_data systf_data;
-   vpiHandle        callback_handle;
-   s_cb_data        systf_cb_data;
-
-   systf_data.type        = vpiSysTask;
-   systf_data.sysfunctype = 0;
-   systf_data.tfname      = "$read_vector";
-   systf_data.calltf      = ReadVectorCalltf;
-   systf_data.compiletf   = ReadVectorCompiletf;
-   systf_data.sizetf      = 0;
-   systf_data.user_data   = 0;
-
-   vpi_register_systf(&systf_data);
-   systf_cb_data.reason = cbStartOfSimulation;
-   systf_cb_data.cb_rtn = FileStartOfSim;
-
-   systf_cb_data.obj       = NULL;
-   systf_cb_data.time      = NULL;
-   systf_cb_data.value     = NULL;
-   systf_cb_data.user_data = NULL;
-   callback_handle         = vpi_register_cb( &systf_cb_data );
-
-   vpi_free_object( callback_handle);
-}
 /****************************************************
  * Required Structure for initializing VPI routines *
  ****************************************************/

@@ -1,0 +1,60 @@
+# do run.do
+# QuestaSim-64 vlog 2020.3 Compiler 2020.07 Jul 12 2020
+# Start time: 15:48:12 on Sep 11,2024
+# vlog top.v 
+# -- Compiling module top
+# 
+# Top level modules:
+# 	top
+# End time: 15:48:12 on Sep 11,2024, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# gcc -g -c -m64 -Wall -I. -IC:/questasim64_2020.3/include  read_vector_vpi.c
+# ** Error: read_vector_vpi.c: In function 'ReadVectorCompiletf':
+# read_vector_vpi.c:70:16: warning: unused variable 'file_name' [-Wunused-variable]
+#    70 |    char       *file_name;
+#       |                ^~~~~~~~~
+# read_vector_vpi.c: In function 'ReadVectorCalltf':
+# read_vector_vpi.c:181:20: warning: unused variable 'time_s' [-Wunused-variable]
+#   181 |    s_vpi_time      time_s;
+#       |                    ^~~~~~
+# read_vector_vpi.c:180:20: warning: unused variable 'data_s' [-Wunused-variable]
+#   180 |    s_cb_data       data_s;
+#       |                    ^~~~~~
+# Executing ONERROR command at macro ./run.do line 39
+# gcc -shared -lm -m64  -Wl,-Bsymbolic -Wl,-export-all-symbols -o  read_vector_vpi.dll read_vector_vpi.o  -LC:/questasim64_2020.3/win64 -lmtipli
+# vsim -c top -pli "read_vector_vpi.dll" 
+# Start time: 15:48:12 on Sep 11,2024
+# ** Note: (vsim-3812) Design is being optimized...
+# ** Warning: (vsim-3865) Due to PLI being present, global +acc is being enabled automatically. This will cause your simulation to run very slowly. Please use vsim -no_autoacc to disable this feature. This feature is now deprecated and will be removed from future releases.
+# //  Questa Sim-64
+# //  Version 2020.3 win64 Jul 12 2020
+# //
+# //  Copyright 1991-2020 Mentor Graphics Corporation
+# //  All Rights Reserved.
+# //
+# //  QuestaSim and its associated documentation contain trade
+# //  secrets and commercial or financial information that are the property of
+# //  Mentor Graphics Corporation and are privileged, confidential,
+# //  and exempt from disclosure under the Freedom of Information Act,
+# //  5 U.S.C. Section 552. Furthermore, this information
+# //  is prohibited from disclosure under the Trade Secrets Act,
+# //  18 U.S.C. Section 1905.
+# //
+# Loading work.top(fast)
+# Loading ./read_vector_vpi.dll
+# FROM SIM :: VECTOR = 0xx
+# FROM VPI :: input = -167312320
+# FROM SIM :: VECTOR = 0x12
+# FROM VPI :: input = -167312320
+# FROM SIM :: VECTOR = 0x13
+# FROM VPI :: input = -167312320
+# FROM SIM :: VECTOR = 0x14
+# FROM VPI :: input = -167312320
+# FROM SIM :: VECTOR = 0x15
+# FROM VPI :: input = -167312320
+# FROM SIM :: VECTOR = 0x16
+# $read_vector reached End-Of-File
+# ** Note: $finish    : top.v(11)
+#    Time: 110 ns  Iteration: 1  Instance: /top
+# End time: 15:48:20 on Sep 11,2024, Elapsed time: 0:00:08
+# Errors: 0, Warnings: 1

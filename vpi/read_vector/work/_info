@@ -8,36 +8,36 @@ z2
 !i10e 25
 !i10f 100
 cModel Technology
-Z0 dC:/Users/nileshdc/Documents/pli_verilog/vpi/file_handling
+Z0 dC:/Users/nileshdc/Documents/pli_verilog/vpi/read_vector
 T_opt
-Z1 !s110 1726033092
-VdE71f2Q@d;Joh5:4j8_MS3
+!s110 1726049893
+V6AWV=cUG0_jPah^GV2HYX3
 04 3 4 work top fast 0
-=1-50ebf694c477-66e12cc4-31a-3724
+=1-50ebf694c477-66e16e65-1e-1cc4
 o-quiet +acc -auto_acc_if_foreign -work work
-Z2 tCvgOpt 0
+Z1 tCvgOpt 0
 n@_opt
 OL;O;2020.3;71
 vtop
-R1
+!s110 1726049892
 !i10b 1
-!s100 ]M::;e72Cd`F_PBh^6_kK3
+!s100 U0>DfPTdoZn^goYb:TKX>0
 !s11b Dg1SIo80bB@j0V0VzS_@n1
-I_Og3835?`RoCH82U8J]g^3
+I^_>W40do0JZQ?J2=ge2hZ2
 R0
-w1725968101
+w1726049556
 8top.v
 Ftop.v
 !i122 0
-L0 1 9
+L0 1 16
 VDg1SIo80bB@j0V0VzS_@n1
 OL;L;2020.3;71
 r1
 !s85 0
 31
-!s108 1726033092.000000
+!s108 1726049892.000000
 !s107 top.v|
 !s90 top.v|
 !i113 0
 o-L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
-R2
+R1
