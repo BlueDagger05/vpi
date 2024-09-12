@@ -1,0 +1,108 @@
+Reading pref.tcl
+
+# 2020.3
+
+# do run.do
+# QuestaSim-64 vlog 2020.3 Compiler 2020.07 Jul 12 2020
+# Start time: 17:15:10 on Sep 12,2024
+# vlog load_counter.v tb_top.v 
+# -- Compiling module load_counter
+# -- Compiling module top
+# 
+# Top level modules:
+# 	top
+# End time: 17:15:11 on Sep 12,2024, Elapsed time: 0:00:01
+# Errors: 0, Warnings: 0
+# gcc -g -c -m64 -Wall -I. -IC:/questasim64_2020.3/include  stimulus_in_vpi.c
+# ** Error: stimulus_in_vpi.c: In function 'StimulusInCompiletf':
+# stimulus_in_vpi.c:71:33: warning: unused variable 'write_file_name' [-Wunused-variable]
+#    71 |    char       *read_file_name, *write_file_name;
+#       |                                 ^~~~~~~~~~~~~~~
+# stimulus_in_vpi.c:71:16: warning: unused variable 'read_file_name' [-Wunused-variable]
+#    71 |    char       *read_file_name, *write_file_name;
+#       |                ^~~~~~~~~~~~~~
+# stimulus_in_vpi.c: In function 'StimulusInCalltf':
+# stimulus_in_vpi.c:219:20: warning: unused variable 'write' [-Wunused-variable]
+#   219 |    char            write[1024];
+#       |                    ^~~~~
+# stimulus_in_vpi.c:213:20: warning: unused variable 'cb_data_s' [-Wunused-variable]
+#   213 |    s_cb_data       cb_data_s;
+#       |                    ^~~~~~~~~
+# Executing ONERROR command at macro ./run.do line 39
+# gcc -shared -lm -m64  -Wl,-Bsymbolic -Wl,-export-all-symbols -o  stimulus_in_vpi.dll stimulus_in_vpi.o  -LC:/questasim64_2020.3/win64 -lmtipli
+# vsim -c top -pli "stimulus_in_vpi.dll" 
+# Start time: 17:15:11 on Sep 12,2024
+# ** Note: (vsim-3812) Design is being optimized...
+# ** Warning: (vsim-3865) Due to PLI being present, global +acc is being enabled automatically. This will cause your simulation to run very slowly. Please use vsim -no_autoacc to disable this feature. This feature is now deprecated and will be removed from future releases.
+# //  Questa Sim-64
+# //  Version 2020.3 win64 Jul 12 2020
+# //
+# //  Copyright 1991-2020 Mentor Graphics Corporation
+# //  All Rights Reserved.
+# //
+# //  QuestaSim and its associated documentation contain trade
+# //  secrets and commercial or financial information that are the property of
+# //  Mentor Graphics Corporation and are privileged, confidential,
+# //  and exempt from disclosure under the Freedom of Information Act,
+# //  5 U.S.C. Section 552. Furthermore, this information
+# //  is prohibited from disclosure under the Trade Secrets Act,
+# //  18 U.S.C. Section 1905.
+# //
+# Loading work.top(fast)
+# Loading work.load_counter(fast)
+# Loading ./stimulus_in_vpi.dll
+# FROM SIM :: DATA_IN = 0xx, COUNT_OUT = 0xx
+# FROM VPI :: input = 10
+# FROM SIM :: DATA_IN = 0x10, COUNT_OUT = 0xx
+# FROM VPI :: input = 20
+# FROM SIM :: DATA_IN = 0x20, COUNT_OUT = 0x10
+# FROM VPI :: input = 30
+# FROM SIM :: DATA_IN = 0x30, COUNT_OUT = 0x11
+# FROM VPI :: input = 40
+# FROM SIM :: DATA_IN = 0x40, COUNT_OUT = 0x30
+# FROM VPI :: input = 50
+# FROM SIM :: DATA_IN = 0x50, COUNT_OUT = 0x31
+# FROM VPI :: input = 60
+# FROM SIM :: DATA_IN = 0x60, COUNT_OUT = 0x50
+# FROM VPI :: input = 70
+# FROM SIM :: DATA_IN = 0x70, COUNT_OUT = 0x51
+# $stimulus_in reached End-Of-File
+# FROM SIM :: DATA_IN = 0x70, COUNT_OUT = 0x70
+# $stimulus_in reached End-Of-File
+# FROM SIM :: DATA_IN = 0x70, COUNT_OUT = 0x71
+# $stimulus_in reached End-Of-File
+# FROM SIM :: DATA_IN = 0x70, COUNT_OUT = 0x70
+# $stimulus_in reached End-Of-File
+# FROM SIM :: DATA_IN = 0x70, COUNT_OUT = 0x71
+# $stimulus_in reached End-Of-File
+# FROM SIM :: DATA_IN = 0x70, COUNT_OUT = 0x70
+# $stimulus_in reached End-Of-File
+# FROM SIM :: DATA_IN = 0x70, COUNT_OUT = 0x71
+# $stimulus_in reached End-Of-File
+# FROM SIM :: DATA_IN = 0x70, COUNT_OUT = 0x70
+# $stimulus_in reached End-Of-File
+# FROM SIM :: DATA_IN = 0x70, COUNT_OUT = 0x71
+# $stimulus_in reached End-Of-File
+# FROM SIM :: DATA_IN = 0x70, COUNT_OUT = 0x70
+# $stimulus_in reached End-Of-File
+# FROM SIM :: DATA_IN = 0x70, COUNT_OUT = 0x71
+# $stimulus_in reached End-Of-File
+# FROM SIM :: DATA_IN = 0x70, COUNT_OUT = 0x70
+# $stimulus_in reached End-Of-File
+# FROM SIM :: DATA_IN = 0x70, COUNT_OUT = 0x71
+# $stimulus_in reached End-Of-File
+# FROM SIM :: DATA_IN = 0x70, COUNT_OUT = 0x70
+# $stimulus_in reached End-Of-File
+# FROM SIM :: DATA_IN = 0x70, COUNT_OUT = 0x71
+# $stimulus_in reached End-Of-File
+# FROM SIM :: DATA_IN = 0x70, COUNT_OUT = 0x70
+# $stimulus_in reached End-Of-File
+# FROM SIM :: DATA_IN = 0x70, COUNT_OUT = 0x71
+# $stimulus_in reached End-Of-File
+# FROM SIM :: DATA_IN = 0x70, COUNT_OUT = 0x70
+# $stimulus_in reached End-Of-File
+# FROM SIM :: DATA_IN = 0x70, COUNT_OUT = 0x71
+# ** Note: $finish    : tb_top.v(27)
+#    Time: 500 ns  Iteration: 0  Instance: /top
+# End time: 17:15:19 on Sep 12,2024, Elapsed time: 0:00:08
+# Errors: 0, Warnings: 1

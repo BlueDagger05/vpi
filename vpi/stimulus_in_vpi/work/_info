@@ -1,0 +1,66 @@
+m255
+K4
+z2
+!s11f vlog 2020.3 2020.07, Jul 12 2020
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 dC:/Users/nileshdc/Documents/pli_verilog/vpi/stimulus_in_vpi
+T_opt
+Z1 !s110 1726141511
+VTBd4E>GTaHBH@^Nj];z[a1
+04 3 4 work top fast 0
+=1-50ebf694c477-66e2d447-18d-410c
+o-quiet +acc -auto_acc_if_foreign -work work
+Z2 tCvgOpt 0
+n@_opt
+OL;O;2020.3;71
+vload_counter
+R1
+!i10b 1
+!s100 4FfVeXWVEMCm249=XN5gW2
+Z3 !s11b Dg1SIo80bB@j0V0VzS_@n1
+Io`A`9>Vb6A5BWeKYNDR]92
+R0
+w1726141198
+8load_counter.v
+Fload_counter.v
+!i122 0
+L0 1 19
+Z4 VDg1SIo80bB@j0V0VzS_@n1
+Z5 OL;L;2020.3;71
+r1
+!s85 0
+31
+Z6 !s108 1726141510.000000
+Z7 !s107 tb_top.v|load_counter.v|
+Z8 !s90 load_counter.v|tb_top.v|
+!i113 0
+Z9 o-L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+R2
+vtop
+R1
+!i10b 1
+!s100 YVjODBH336Kl^AKK6I3oI3
+R3
+IR:3g19Vz35YYnKhR3_;QA0
+R0
+w1726140788
+8tb_top.v
+Ftb_top.v
+!i122 0
+L0 1 31
+R4
+R5
+r1
+!s85 0
+31
+R6
+R7
+R8
+!i113 0
+R9
+R2
