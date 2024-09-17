@@ -4,6 +4,6 @@
 run:
 	vsim -c -do run.do >> log_file.txt
 clean:
-	> log_files.log |	rm -r work/ |	rm transcript | rm *dll |	rm -r *.o | rm *vstf
+	> log_files.log |	> output_log.txt | 	rm -r work/ |	rm transcript | rm *dll |	rm -r *.o | rm *vstf
 
 

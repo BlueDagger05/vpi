@@ -74,7 +74,7 @@ PLI_INT32 StimulusInCompiletf(PLI_BYTE8 *user_data)
    systf_h = vpi_handle(vpiSysTfCall, NULL);
    arg_itr = vpi_iterate(vpiArgument, systf_h);
    if(arg_itr == NULL) {
-      vpi_printf("ERROR :: $stimulus_in requires three arguments \n");
+      vpi_printf("ERROR :: $stimulus_in requires four arguments \n");
       vpi_control(vpiFinish, 1); /* abort simulation */
       return(0);
    }
@@ -101,15 +101,25 @@ PLI_INT32 StimulusInCompiletf(PLI_BYTE8 *user_data)
    arg_h = vpi_scan(arg_itr);
    tfarg_type = vpi_get(vpiType, arg_h);
    if(  (tfarg_type != vpiReg)        && 
-        (tfarg_type != vpiIntegerVar) &&
-        (tfarg_type != vpiWire)       &&
-        (tfarg_type != vpiTimeVar) ) {
-      vpi_printf("$stimulus_in arg3 must be a valid data type \n");
+        (tfarg_type != vpiWire)) {
+      vpi_printf("$stimulus_in arg3 must be a valid input \n");
+      err_flag = 1;
+   }
+   else {
+      vpi_iterate(vpiIndex, lsb);
+      vpi_printf("LSB :: %d")
+   }
+
+   arg_h = vpi_scan(arg_itr);
+   tfarg_type = vpi_get(vpiType, arg_h);
+   if( (tfarg_type != vpiReg) &&
+       (tfarg_type != vpiWire)) {
+      vpi_printf("$stimulus_in arg4 must be a valid output \n");
       err_flag = 1;
    }
 
    if(vpi_scan(arg_itr) != NULL) {
-      vpi_printf("$stimulus_in needs only three arguments \n");
+      vpi_printf("$stimulus_in needs only four arguments \n");
       vpi_free_object(arg_itr);
       err_flag = 1;
    }
@@ -201,6 +211,67 @@ PLI_INT32 StimulusInStartOfSim(p_cb_data cb_data)
 
    return(0);
 }
+/* Another Calltf function */
+
+PLI_INT32 ReadVecVal_calltf(PLI_BYTE8 *user_data)
+{
+   vpiHandle          systf_h, arg_itr, arg_h, vector_h;
+   vpiHandle          parent;
+   s_vpi_value        vector_val;
+   PLI_INT32          vector_size, array_size;
+   PLI_INT32          lsb, msb;
+
+   int i, bit_num, avalbit, bvalbit;
+   char vlogval;
+
+   /* obtain a handle to the system task instance */
+   systf_h = vpi_handle(vpiSysTfCall, NULL);
+
+   /* obtain handle to system task argument */
+   arg_itr = vpi_iterate(vpiArgument, systf_h);
+   vector_h = vpi_scan(arg_itr);
+   vpi_free_object(arg_itr); /* free iterator memory */
+
+   vector_size = vpi_get(vpiSize, vector_h); /* determine number of ...  */
+   array_size = ((vector_size-1) / 32+1);    /* .. elements in the array */
+
+   vector_val.format = vpiVectorVal; /* set value format field */
+    
+   vpi_get_value(vector_h, &vector_val); /* read vector's logic value */
+
+   vpi_printf("\n vector %s encoded value:\n", vpi_get_str(vpiName, vector_h));
+
+   for(i=0; i<array_size; i++) {
+      for(bit_num=0; bit_num<=31; bit_num++) {
+         avalbit = getbit(vector_val.value.vector[i].aval, bit_num);
+         bvalbit = getbit(vector_val.value.vector[i].bval, bit_num);
+         vlogval = get_4_state_val(avalbit, bvalbit);
+         vpi_printf("bit[%2d] aval/bval = %d/%d 4-state value = %c\n", 
+               (i*32+bit_num), avalbit, bvalbit, vlogval);
+
+         if((i*32+bit_num) == vector_size-1) break;
+      }
+   }
+   return(0);
+
+}
+
+
+int getbit(PLI_INT32 word, int bit_num);
+{
+   int mask;
+   mask=0x00000001 << bit_num;
+   return((word & mask) ? 1:0);
+}
+
+char get_4_state_val(int aval, int bval)
+{
+   if(!bval && !aval)     return('0');
+   else if(!bval && aval) return('1');
+   else if(bval && !aval) return('z');
+   else                   return ('x');
+
+}
 /****************************************************
  * StimulusInCalltf()                               *
  *                                                  *
@@ -240,7 +311,7 @@ PLI_INT32 StimulusInCalltf(PLI_BYTE8 *user_data)
    vpi_put_value(arg3_h, &value_s, NULL, vpiNoDelay);
    vpi_printf("FROM VPI :: input = %s\n", value_s.value.str);
 
-   if( (fprintf(write_file, "%d\n", 10)) == EOF) {
+   if( (fprintf(write_file, "Output is :: %s\n", value_s.value.str)) == EOF) {
       fclose(vector_data->write_file_ptr);
       return(0);
        vpi_control(vpiFinish,1);

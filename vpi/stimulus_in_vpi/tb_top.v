@@ -15,13 +15,17 @@ load_counter DUT (.clk        (clk),
 initial begin
    clk = 0;
    load_en = 0;
+   resetn = 0;
+   fork
+   #20 resetn = 1;
    forever #10 clk = ~clk;
+join
 end
 
 always #20 load_en = ~load_en;
 
 /* $stimulus_in :: <"stimulus file"> , <"output log file">, <input variable> */
-always @(posedge clk)  $stimulus_in("input_stim.txt", "output_log.txt", data_in);
+always @(posedge clk)  $stimulus_in("input_stim.txt", "output_log.txt", data_in, count_out);
 initial begin
    $monitor("FROM SIM :: DATA_IN = 0x%0h, COUNT_OUT = 0x%0h", data_in, count_out);
    #500 $finish();
